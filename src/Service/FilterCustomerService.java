@@ -15,8 +15,8 @@ public class FilterCustomerService {
         HashMap<String, List<CustomerInfo>> validAndInvalidCustomers=new HashMap<String,List<CustomerInfo>>();
         LinkedHashMap<String,CustomerInfo> invalidCustomerHashMap=new LinkedHashMap<String,CustomerInfo>();
         LinkedHashMap<String,CustomerInfo> validCustomerHashMap=new LinkedHashMap<String,CustomerInfo>();
+        String filePath="E:\\CMED Task\\1M-customers.txt";
         try{
-            String filePath="E:\\CMED Task\\1M-customers.txt";
             File file=new File(filePath);
             InputStream inputStream=new BufferedInputStream(new FileInputStream(file));
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
