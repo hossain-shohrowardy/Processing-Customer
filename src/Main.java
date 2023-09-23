@@ -16,25 +16,33 @@ public class Main {
     private Connection connection;
     public static void main(String[] args) throws SQLException, IOException {
         long startTime = System.currentTimeMillis();
+        // Connect to mysql database
         Connection connection =DataBaseConnection.createConnection();
         connection.setAutoCommit(false);
+
+        // Validate and filter valid and invalid customers from the given file
         FilterCustomerService filterCustomerService=new FilterCustomerService();
         HashMap<String, List<CustomerInfo>> filteredCustomers= filterCustomerService.getFilteredValidAndInvalidCustomers();
         List<CustomerInfo> validCustomers=filteredCustomers.get("validCustomer");
         List<CustomerInfo> inValidCustomers=filteredCustomers.get("invalidCustomers");
-        System.out.println("valid and customers size : "+validCustomers.size());
-        System.out.println("invalid and customers size : "+inValidCustomers.size());
+
+        // Store valid and invalid customer into database table
         StoreCustomerService storeCustomerService=new StoreCustomerService();
         storeCustomerService.batchInsert(connection,validCustomers,"customer_info");
         storeCustomerService.batchInsert(connection,inValidCustomers,"invalid_customer_info");
-       // connection.commit();
+
+        // Close database connection
         connection.close();
 
+        // Export valid and invalid customers in csv file using multi-threading
         ExportCustomersFileService exportCustomersFileService=new ExportCustomersFileService(validCustomers,inValidCustomers);
         exportCustomersFileService.startServiceForValidCustomer();
         exportCustomersFileService.startServiceForInValidCustomer();
+
+        //Count execution time in milliseconds
         long endTime = System.currentTimeMillis();
         System.out.println("Time taken "+ (endTime - startTime) + " ms");
+
 
 
 
